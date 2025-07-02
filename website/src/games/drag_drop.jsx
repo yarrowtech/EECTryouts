@@ -7,7 +7,7 @@ export default function DragDrop() {
         },
     ])
     return (
-        <section className='w-[60vw] m-auto flex flex-col items-center gap-3 pt-10 font-semibold'>
+        <section className='w-[60vw] m-auto flex flex-col items-center gap-3 pt-10'>
             {
                 questionSet.map((question, index) => (
                     <QuestionCard key={index} question={question} />
