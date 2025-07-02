@@ -36,7 +36,7 @@ function MCQ() {
   const q = questions[current];
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-blue-100 rounded-xl shadow-lg p-8 border border-purple-200">
+    <div className="max-w-xl mx-auto mt-10 bg-white-100 rounded-xl shadow-lg p-8 border border-purple-500">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">MCQ</h2>
       <div className="mb-4">
         <span className="text-lg font-medium text-gray-700">Q{current + 1}:</span>
@@ -64,13 +64,11 @@ function MCQ() {
         {current < questions.length - 1 ? (
           <button
             onClick={handleNext}
-            className="px-6 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition-all disabled:opacity-50"
-            disabled={selected === null}
-          >
+            className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition-all disabled:opacity-50"          >
             Next
           </button>
         ) : selected !== null && (
-          <span className="text-xl font-semibold text-purple-700">Completed!</span>
+          <span className="text-xl font-semibold text-purple-700"></span>
         )}
       </div>
     </div>
