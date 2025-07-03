@@ -11,14 +11,16 @@ export default function DragDrop() {
   const [optionPos, setOptionPos] = useState("down");
   return (
     <section className={`${optionPos == 'left' || optionPos == 'right' ? 'w-[80vw]' : 'w-[60vw]'} m-auto flex flex-col items-center gap-3 pt-10`}>
-        <select name="" id="" className="absolute top-2 right-2 border-0 outline-none text-white p-2 bg-purple-500"
-        onChange={(e) => setOptionPos(e.target.value)}>
-            <option value="" hidden>Select Option Position</option>
-            <option value="up">Up</option>
-            <option value="down">Down</option>
-            <option value="left">Left</option>
-            <option value="right">Right</option>
-        </select>
+        <div className="absolute top-2 right-2 flex gap-2 items-center">
+            <label className="text-purple-500">Option Position:</label>
+            <select name="" id="" className="border-2 border-purple-500 p-2 rounded-xl" onChange={(e) => setOptionPos(e.target.value)}>
+                <option value="" hidden>Select Option Position</option>
+                <option value="up">Up</option>
+                <option value="down">Down</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+            </select>
+        </div>
       {questionSet.map((question, index) => (
         <QuestionCard key={index} question={question} optionPos={optionPos} />
       ))}
