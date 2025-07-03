@@ -3,7 +3,7 @@ import DragDrop from "./games/drag_drop"
 import MCQ from "./games/mcq"
 import ClozeText from "./games/cloze_text"
 import ClozeDropDown from "./games/cloze_drop_down"
-
+import ChoiceMatrix from "./games/choice_matrix"
 function App() {
   return (
     <Routes>
@@ -12,6 +12,7 @@ function App() {
       <Route path="/cloze-text" element={<ClozeText />} />
       <Route path="/cloze-drop-down" element={<ClozeDropDown />} />
       <Route path="/mcq" element={<MCQ />} />
+      <Route path="/choice-matrix" element={<ChoiceMatrix />} />
     </Routes>
   )
 }
