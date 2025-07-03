@@ -35,13 +35,13 @@ function QuestionCard({ items, pairs }) {
           return (
             <div key={i} className="contents">
             <p
-              className="min-h-10 p-2 min-w-10 border border-gray-300 box-border"
+              className="min-h-10 p-2 min-w-10 rounded-lg border box-border border-purple-500"
               >
               {item}
             </p>
             <hr key={`line-${i}`} className="self-center" />
             <p
-              className={`min-h-10 p-2 min-w-10 border border-gray-300 box-border ${showMatch[i].show ? "bg-yellow-100 flex justify-between" : ""}`}
+              className={`min-h-10 p-2 min-w-10 rounded-lg border border-gray-300 box-border ${showMatch[i].show ? "bg-yellow-100 flex justify-between border-purple-500" : ""}`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 const data = e.dataTransfer.getData("text");
