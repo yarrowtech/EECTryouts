@@ -61,7 +61,7 @@ function ChoiceMatrix() {
                     name={`choice-${idx}`}
                     checked={answers[idx] === false}
                     onChange={() => handleSelect(idx, false)}
-                    className="accent-yellow-500 w-5 h-5"
+                    className="accent-purple-500 w-5 h-5"
                   />
                 </td>
               </tr>
