@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-export default function DragDrop() {
+export default function ClozeDragDrop() {
   const [questionSet, setQuestionSet] = useState([
     {
       question:
@@ -54,7 +54,7 @@ function QuestionCard({ question, optionPos }) {
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
                     const data = e.dataTransfer.getData("text");
-                    const temp = showDrop;
+                    const temp = [...showDrop];
                     temp[i].show = true;
                     temp[i].value = data;
                     setShowDrop([...temp]);
@@ -69,7 +69,7 @@ function QuestionCard({ question, optionPos }) {
                       <span>{showDrop[i].value}</span>
                       <button
                         onClick={() => {
-                          const temp = showDrop;
+                          const temp = [...showDrop];
                           temp[i].show = false;
                           setShowDrop([...temp]);
                           setOptions([...options, showDrop[i].value]);
