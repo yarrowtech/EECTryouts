@@ -8,6 +8,7 @@ import ChoiceMatrix from "./games/choice_matrix"
 import SortList from "./games/sort_list"
 import FileUpload from "./games/file_upload"
 import ImageHighlighter from "./games/image_highlighter"
+import RichText from "./games/rich_text"
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <Route path="/match-list" element={<MatchList />} />
       <Route path="/sort-list" element={<SortList />} />
       <Route path="/mcq" element={<MCQ />} />
+      <Route path="/rich-text" element={<RichText />} />
       <Route path="/choice-matrix" element={<ChoiceMatrix />} />
       <Route path="/file-upload" element={<FileUpload />} />
       <Route path="/image-highlighter" element={<ImageHighlighter />} />
