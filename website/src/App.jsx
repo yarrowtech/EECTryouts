@@ -9,6 +9,7 @@ import SortList from "./games/sort_list"
 import FileUpload from "./games/file_upload"
 import ImageHighlighter from "./games/image_highlighter"
 import RichText from "./games/rich_text"
+import TextEditor from "./games/plain_txt"
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       <Route path="/choice-matrix" element={<ChoiceMatrix />} />
       <Route path="/file-upload" element={<FileUpload />} />
       <Route path="/image-highlighter" element={<ImageHighlighter />} />
+      <Route path="/text-editor" element={<TextEditor />} />
     </Routes>
   )
 }
