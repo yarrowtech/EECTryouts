@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom"
 import ClozeDragDrop from "./games/cloze_drag_drop"
+import ClozeDragDropPanel from "./panel/cloze_drag_drop"
 import MCQ from "./games/mcq"
 import ClozeText from "./games/cloze_text"
 import ClozeDropDown from "./games/cloze_drop_down"
@@ -11,13 +12,15 @@ import ImageHighlighter from "./games/image_highlighter"
 import RichText from "./games/rich_text"
 import TextEditor from "./games/plain_txt"
 import MCQPanel from "./panel/mcq"
+import "quill/dist/quill.snow.css";
+
 
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<h1>Welcome to the EEC Tryout</h1>} />
-      <Route path="/drag-drop" element={<ClozeDragDrop />} />
+      <Route path="/cloze-drag-drop" element={<ClozeDragDrop />} />
       <Route path="/cloze-text" element={<ClozeText />} />
       <Route path="/cloze-drop-down" element={<ClozeDropDown />} />
       <Route path="/match-list" element={<MatchList />} />
@@ -30,6 +33,8 @@ function App() {
       <Route path="/text-editor" element={<TextEditor />} />
 
       <Route path="/panel">
+        <Route path="cloze-drag-drop" element={<ClozeDragDropPanel />} />
+        <Route path="cloze-drop-down" element={<ClozeDropDown />} />
         <Route path="mcq" element={<MCQPanel />} />
       </Route>
     </Routes>

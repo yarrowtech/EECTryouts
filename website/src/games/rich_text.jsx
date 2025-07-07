@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Quill from "quill";
 
 export default function RichText() {
   const [questionSet, setQuestionSet] = useState([
