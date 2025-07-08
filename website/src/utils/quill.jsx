@@ -18,7 +18,7 @@ export default function QuillEditor() {
             insert: function () {
               const range = quill.getSelection();
               if (range) {
-                quill.insertText(range.index, "${{blank}}")
+                quill.insertText(range.index, "${{______}}")
               }
             },
           },
