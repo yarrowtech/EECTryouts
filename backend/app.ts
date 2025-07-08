@@ -5,13 +5,6 @@ import MCQ from "./model/mcq.js";
 const app = express();
 connectToMongoDB();
 
-// Add debugging middleware
-app.use((req, res, next) => {
-  console.log("Content-Type:", req.headers["content-type"]);
-  console.log("Raw body:", req.body);
-  next();
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,10 +26,10 @@ app.post("/mcq/submit", async (req: Request, res: Response) => {
     });
 
     await mcq.save();
-    res.status(201).json({ message: "MCQ submitted successfully", mcq });
+    res.status(201).json({ message: "MCQ submitted successfully" });
   } catch (err) {
     console.error("Error submitting MCQ:", err);
-    res.status(500).json({ error: (err as Error).message });
+    res.status(500).json({ message: (err as Error).message });
   }
 });
 
