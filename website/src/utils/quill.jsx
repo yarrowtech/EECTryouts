@@ -3,7 +3,7 @@ import { BetweenHorizonalEnd } from "lucide-react";
 import Quill from "quill";
 
 
-export default function QuillEditor() {
+export default function QuillEditor({type}) {
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
 
@@ -34,7 +34,7 @@ export default function QuillEditor() {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col">
       <div id="toolbar">
         <span className="ql-formats">
           <button className="ql-bold"></button>
@@ -106,13 +106,17 @@ export default function QuillEditor() {
           <select className="ql-color"></select>
           <select className="ql-background"></select>
         </span>
-        <span className="ql-formats">
+        {type == "question-editor" && <span className="ql-formats">
           <button className="ql-insert">
             <BetweenHorizonalEnd />
           </button>
-        </span>
+        </span>}
       </div>
       <div id="editor"></div>
+      <div className="text-xs self-end flex gap-3">
+            <p className="">{charCount} chars</p>
+            <p className="">{wordCount} words</p>
+        </div>
     </div>
   );
 }
