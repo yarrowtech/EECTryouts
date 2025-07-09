@@ -8,6 +8,17 @@ export default function ClozeDragDropPanel() {
   const [showOptionInput, setShowOptionInput] = useState(false);
   const optionInputRef = useRef(null);
   const [posting, setPosting] = useState(false);
+  const draggedItem = useRef(null);
+
+  function handleSort(index) {
+    if (draggedItem.current === null) return;
+    const newOptions = [...optionList];
+    const temp = newOptions[draggedItem.current];
+    newOptions[draggedItem.current] = newOptions[index];
+    newOptions[index] = temp;
+    setOptionList(newOptions);
+    draggedItem.current = null;
+  }
 
   function handleOptionAdd() {
     const newOption = optionInputRef.current.value.trim();
@@ -43,7 +54,11 @@ export default function ClozeDragDropPanel() {
       <p>Set answers:</p>
       <div className="flex flex-col gap-2">
         {optionList.map((option, index) => (
-          <div key={index} className="grid grid-cols-[1fr_50px] gap-2">
+          <div key={index} className="grid grid-cols-[1fr_50px] gap-2" draggable
+            onDragStart={(e) => draggedItem.current = index}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => handleSort(index)}
+          >
             <p className="p-3 bg-purple-400 rounded-lg">{option}</p>
             <div
               className="self-center flex justify-center items-center cursor-pointer h-full w-full"
