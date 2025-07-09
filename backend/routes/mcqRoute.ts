@@ -32,7 +32,7 @@ mcqRouter.post("/submit", async (req: Request, res: Response) => {
 
 mcqRouter.get("/fetch", async (req: Request, res: Response) => {
   try {
-    const mcqs = await MCQ.find({});
+    const mcqs = await MCQ.find({}).select("-answer");
     res.status(200).json(mcqs);
   } catch (err) {
     console.error("Error fetching MCQs:", err);
