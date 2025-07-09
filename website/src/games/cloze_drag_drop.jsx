@@ -1,14 +1,20 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function ClozeDragDrop() {
-  const [questionSet, setQuestionSet] = useState([
-    {
-      question:
-        "There are several different types of drums. The ${{blank}} drum is a long bodied drum typically held between the knees and played with the fingers. A drum with small metal disc around the edge played by being shaken is a ${{blank}}. Many years ago, a ${{blank}} drum was used to announce an army's arrival onto a battlefield. Finally, the biggest drum in a marching band is called a ${{blank}} drum.",
-      options: ["snare", "bass", "tom-tom", "cymbal"],
-    },
-  ]);
+  const [questionSet, setQuestionSet] = useState([]);
   const [optionPos, setOptionPos] = useState("down");
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/drag-drop/fetch`)
+      .then((response) => response.json())
+      .then((data) => {
+        setQuestionSet(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching questions:", error);
+      });
+  }, [])
+
   return (
     <section className={`${optionPos == 'left' || optionPos == 'right' ? 'w-[80vw]' : 'w-[60vw]'} m-auto flex flex-col items-center gap-3 pt-10`}>
         <div className="absolute top-2 right-2 flex gap-2 items-center">
@@ -29,7 +35,7 @@ export default function ClozeDragDrop() {
 }
 
 function QuestionCard({ question, optionPos }) {
-  const parts = question.question.split("${{blank}}");
+  const parts = question.question.split("${{________}}");
   const [options, setOptions] = useState(question.options);
   const dropBoxRef = useRef([]);
   const [showDrop, setShowDrop] = useState(
@@ -43,11 +49,11 @@ function QuestionCard({ question, optionPos }) {
   const rightArrow = "-right-4 top-1/2 -translate-y-1/2 border-t-[15px] border-t-transparent border-b-[15px] border-b-transparent border-l-[30px] border-l-yellow-100 border-r-0";
   return (
     <div className={`w-3/4 border flex ${optionPos == "down" ? 'flex-col' : optionPos == "left" ? 'flex-row-reverse' : optionPos == "right" ? 'flex-row' : 'flex-col-reverse'} items-center justify-center gap-5 border-purple-500 p-8 rounded-xl shadow-l`}>
-      <div>
+      <div className="flex">
         {parts.map((part, i) => {
           return (
             <React.Fragment key={i}>
-              <span className="select-none">{part}</span>
+              <span className="select-none self-end" dangerouslySetInnerHTML={{ __html: part }}></span>
               {i < parts.length - 1 ? (
                 <span
                   ref={(el) => (dropBoxRef.current[i] = el)}
@@ -55,6 +61,7 @@ function QuestionCard({ question, optionPos }) {
                   onDrop={(e) => {
                     const data = e.dataTransfer.getData("text");
                     const temp = [...showDrop];
+                    if (temp[i].show) return
                     temp[i].show = true;
                     temp[i].value = data;
                     setShowDrop([...temp]);

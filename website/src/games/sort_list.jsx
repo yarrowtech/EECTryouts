@@ -24,7 +24,6 @@ function QuestionCard({ questionIndex, questionSet, setQuestionSet }) {
     const draggedItem = useRef(null)
     const draggedOverItem = useRef(null)
     const { question, list } = questionSet[questionIndex]
-    const [itemList, setItemList] = useState(list.map(() => false));
     function handleSort(e, index) {
         const temp = list[draggedItem.current]
         list[draggedItem.current] = list[draggedOverItem.current]
@@ -44,7 +43,7 @@ function QuestionCard({ questionIndex, questionSet, setQuestionSet }) {
             <div className="w-1/2 flex flex-col items-center justify-center">
             {
                 list.map((item, index) => (
-                    <p key={index} className={`w-full p-3 text-center border border-gray-300 rounded-md cursor-pointer ${itemList[index] ? "bg-yellow-100" : "bg-purple-500"} text-white`}
+                    <p key={index} className={`w-full p-3 text-center border border-gray-300 rounded-md cursor-pointer bg-purple-500 text-white`}
                      draggable
                      onDragStart={(e) => draggedItem.current = index}
                      onDragEnter={(e) => {
@@ -55,13 +54,6 @@ function QuestionCard({ questionIndex, questionSet, setQuestionSet }) {
                             return newList;
                         });
                     }}
-                     onDragLeave={(e) => {
-                        setItemList((prev) => {
-                            const newList = [...prev];
-                            newList[index] = false;
-                            return newList;
-                        });
-                     }}
                      onDragOver={(e) => e.preventDefault()}
                      onDrop={(e) => handleSort(e, index)}
                      >

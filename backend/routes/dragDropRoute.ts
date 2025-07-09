@@ -32,7 +32,7 @@ dragDropRouter.post("/submit", async (req: Request, res: Response) => {
 
 dragDropRouter.get("/fetch", async (req: Request, res: Response) => {
   try {
-    const dragDrop = await DragDrop.find({});
+    const dragDrop = await DragDrop.find({}).select("-answer");
     res.status(200).json(dragDrop);
   } catch (err) {
     console.error("Error fetching DragDrops:", err);
