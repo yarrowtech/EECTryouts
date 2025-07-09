@@ -2,7 +2,7 @@
   "watch": ["dist/"],
   "ext": "js,json",
   "ignore": ["node_modules", "*.test.ts"],
-  "exec": "node --env-file=.local.env dist/app.js",
+  "exec": "node --env-file=.env.local dist/app.js",
   "restartable": "rs",
   "colours": true,
   "verbose": true,
