@@ -39,8 +39,8 @@ export default function ClozeDragDropPanel() {
   return (
     <section className="w-[60vw] my-10 mx-auto grid gap-5">
       <p>Compose the question:</p>
-      <QuillEditor />
-      <p className="mt-20">Set answers:</p>
+      <QuillEditor type="question-editor" />
+      <p>Set answers:</p>
       <div className="flex flex-col gap-2">
         {optionList.map((option, index) => (
           <div key={index} className="grid grid-cols-[1fr_50px] gap-2">
