@@ -7,8 +7,13 @@ export default function MCQPanel() {
   const [showOptionInput, setShowOptionInput] = useState(false);
   const questionInputRef = useRef(null);
   const optionInputRef = useRef(null);
+  const [posting, setPosting] = useState(false);
 
   function handleOptionAdd() {
+    if (optionList.length >= 4) {
+      toast.error("You can only add up to 4 options.");
+      return;
+    }
     const newOption = optionInputRef.current.value.trim();
     if (newOption) {
       setOptionList([
@@ -30,6 +35,7 @@ export default function MCQPanel() {
         options,
         answer: optionList.find((option) => option.answer)?.value,
       };
+      setPosting(true)
       fetch(`${import.meta.env.VITE_API_URL}/mcq/submit`, {
         method: "POST",
         headers: {
@@ -48,9 +54,11 @@ export default function MCQPanel() {
             toast.success(data.message);
           questionInputRef.current.value = "";
           setOptionList([]);
+          setPosting(false);
         })
         .catch((error) => {
           toast.error(error.message);
+          setPosting(false);
         });
     } else {
       toast.error("Please fill in the question and at least one option.");
@@ -142,8 +150,8 @@ export default function MCQPanel() {
           </div>
         )}
       </div>
-      <button className="bg-purple-400 p-3 rounded-xl cursor-pointer text-white font-bold" onClick={handlePost}>
-        Post
+      <button className="bg-purple-400 p-3 rounded-xl cursor-pointer text-white font-bold" disabled={posting} onClick={handlePost}>
+        {posting ? "Posting..." : "Post"}
       </button>
     </section>
   );
