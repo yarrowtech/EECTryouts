@@ -1,22 +1,4 @@
-import React, { useState } from "react";
-
-const questions = [
-  {
-    question: "What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    answer: 2,
-  },
-  {
-    question: "Which planet is known as the Red Planet?",
-    options: ["Earth", "Mars", "Jupiter", "Saturn"],
-    answer: 1,
-  },
-  {
-    question: "Who wrote 'To Kill a Mockingbird'?",
-    options: ["Harper Lee", "Mark Twain", "J.K. Rowling", "Jane Austen"],
-    answer: 0,
-  },
-];
+import React, { useEffect, useState } from "react";
 
 const optionLabels = ['A', 'B', 'C', 'D'];
 
@@ -24,6 +6,7 @@ function MCQ() {
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState(null);
   const [theme, setTheme] = useState('standard'); // 'radio' or 'button'
+  const [questions, setQuestions] = useState([])
 
   const handleOptionClick = (idx) => {
     setSelected(idx);
@@ -39,7 +22,16 @@ function MCQ() {
     setSelected(null);
   };
 
-  const q = questions[current];
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/mcq/fetch`)
+      .then(response => response.json())
+      .then(data => {
+        setQuestions(data);
+      })
+      .catch(error => {
+        console.error('Error fetching questions:', error);
+      });
+  }, [])
 
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white-100 rounded-xl shadow-lg p-8 border border-purple-500">
@@ -55,11 +47,11 @@ function MCQ() {
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">MCQ</h2>
       <div className={`mb-4 w-full flex ${theme === 'radio' ? 'justify-center' : 'justify-start'} items-center`}>
         <span className="text-lg font-medium text-gray-700">Q{current + 1}:</span>
-        <span className="ml-2 text-lg text-black">{q.question}</span>
+        <span className="ml-2 text-lg text-black">{questions[current]?.question}</span>
       </div>
       {theme === 'standard' ? (
         <ul className="space-y-3 mb-6 list-disc list-inside">
-          {q.options.map((option, idx) => {
+          {questions[current]?.options.map((option, idx) => {
             const isSelected = selected === idx;
             return (
               <li key={idx} className={`flex items-center ${isSelected ? 'bg-yellow-100' : ''} p-3 rounded-lg`}>
@@ -79,7 +71,7 @@ function MCQ() {
         </ul>
       ) :  theme === 'block' ? (
         <div className="space-y-3 mb-6">
-          {q.options.map((option, idx) => {
+          {questions[current]?.options.map((option, idx) => {
             const isSelected = selected === idx;
             return (
               <button
@@ -98,7 +90,7 @@ function MCQ() {
         </div>
       ):(
         <ul className="space-y-3 mb-6 list-disc list-inside ou">
-          {q.options.map((option, idx) => {
+          {questions[current]?.options.map((option, idx) => {
             const isSelected = selected === idx;
             return (
               <li key={idx} className={`flex flex-col-reverse items-center ${isSelected ? 'bg-yellow-100' : ''} p-3 rounded-lg`}>

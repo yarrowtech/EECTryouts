@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Quill from "quill";
 
 export default function RichText() {
   const [questionSet, setQuestionSet] = useState([
@@ -47,10 +48,6 @@ function QuestionCard({ question }) {
         setWordCount(quill.getText().trim().split(/\s+/).length);
         setCharCount(quill.getText().length-1);
     })
-    const toolbar = quill.getModule("toolbar");
-    toolbar.addHandler("word count", () => {
-        console.log("word count is clicked");
-    });
   }, []);
 
   return (
