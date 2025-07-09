@@ -1,12 +1,14 @@
 import express, { Request, Response } from "express";
 import connectToMongoDB from "./db.js";
 import MCQ from "./model/mcq.js";
+import cors from "cors";
 
 const app = express();
 connectToMongoDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors())
 
 app.post("/mcq/submit", async (req: Request, res: Response) => {
   try {
