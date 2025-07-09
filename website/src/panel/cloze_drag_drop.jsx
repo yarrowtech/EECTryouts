@@ -1,14 +1,39 @@
-import { Trash2, Plus, Ban } from "lucide-react";
+import { Trash2, Plus, Ban, FastForward } from "lucide-react";
 import { useRef, useState } from "react";
 import QuillEditor from "../utils/quill";
+import { toast } from "react-toastify";
 
 export default function ClozeDragDropPanel() {
   const [optionList, setOptionList] = useState([]);
   const [showOptionInput, setShowOptionInput] = useState(false);
   const optionInputRef = useRef(null);
+  const [posting, setPosting] = useState(false);
+
+  function handleOptionAdd() {
+    const newOption = optionInputRef.current.value.trim();
+    if (newOption) {
+      setOptionList([...optionList, newOption]);
+      optionInputRef.current.value = "";
+    }
+  }
 
   function handlePost() {
-    console.log("submitting....")
+    setPosting(true);
+    const question = document.querySelector(".ql-editor").innerHTML.trim();
+    const blankCount = Array.from(
+      question.matchAll(/\$\{\{________\}\}/g)
+    ).length;
+    if (blankCount > optionList.length) {
+      toast.error(
+        "You need to provide at least as many options as there are blanks in the question."
+      );
+      setPosting(false);
+      return;
+    }
+    setTimeout(() => {
+      toast.success("Question posted successfully!");
+      setPosting(false);
+    }, 2000);
   }
 
   return (
@@ -55,16 +80,13 @@ export default function ClozeDragDropPanel() {
               className="outline-none border-2 border-solid border-purple-500 p-2 rounded-lg"
               placeholder="Enter option...."
               ref={optionInputRef}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleOptionAdd();
+              }}
             />
             <button
               className="bg-purple-400 px-3 py-1 rounded-xl cursor-pointer text-white"
-              onClick={() => {
-                const newOption = optionInputRef.current.value.trim();
-                if (newOption) {
-                  setOptionList([...optionList, newOption]);
-                  optionInputRef.current.value = "";
-                }
-              }}
+              onClick={handleOptionAdd}
             >
               Add
             </button>
@@ -74,8 +96,9 @@ export default function ClozeDragDropPanel() {
       <button
         onClick={handlePost}
         className="bg-purple-400 px-3 py-1 rounded-xl cursor-pointer text-white"
+        disabled={posting}
       >
-        Post
+        {posting ? "Posting...." : "Post"}
       </button>
     </section>
   );
