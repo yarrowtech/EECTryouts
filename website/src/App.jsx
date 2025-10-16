@@ -10,6 +10,7 @@ import FileUpload from "./games/file_upload"
 import ImageHighlighter from "./games/image_highlighter"
 import RichText from "./games/rich_text"
 import TextEditor from "./games/plain_txt"
+import IntermediateRoutes from "./games/intermediate/index.jsx"
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
       <Route path="/file-upload" element={<FileUpload />} />
       <Route path="/image-highlighter" element={<ImageHighlighter />} />
       <Route path="/text-editor" element={<TextEditor />} />
+      <Route path="/intermediate/*" element={<IntermediateRoutes />} />
     </Routes>
   )
 }
