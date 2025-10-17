@@ -11,15 +11,27 @@ function ImageHighlighter() {
   const imgRef = useRef(null);
   const isDrawing = useRef(false);
   const currentPath = useRef([]);
+  const lineStartRef = useRef(null);
 
   const updateCanvasSize = () => {
     const img = imgRef.current;
-    console.log(img);
-    clearInterval;
     const canvas = canvasRef.current;
-    if (img && canvas) {
-      canvas.width = img.width;
-      canvas.height = img.height;
+    if (!img || !canvas) return;
+
+    const { naturalWidth, naturalHeight } = img;
+    const { width: displayWidth, height: displayHeight } = img.getBoundingClientRect();
+
+    // Ensure drawing coordinates operate in natural image resolution
+    canvas.width = naturalWidth;
+    canvas.height = naturalHeight;
+
+    // Match the displayed size so pointer math lines up with drawing surface
+    canvas.style.width = `${displayWidth}px`;
+    canvas.style.height = `${displayHeight}px`;
+
+    // Redraw existing paths after resizing
+    if (paths.length > 0) {
+      redrawCanvas(paths);
     }
   };
 
@@ -39,37 +51,85 @@ function ImageHighlighter() {
     reader.readAsDataURL(file);
   };
 
-  const getRelativeCoords = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
+  const getRelativeCoords = (event) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    const point = event.touches?.[0] || event.changedTouches?.[0] || event;
+
+    // Scale coordinates to the canvas's internal resolution
+    const x = point.clientX - rect.left;
+    const y = point.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: x * scaleX,
+      y: y * scaleY,
     };
   };
 
-  const startDrawing = (e) => {
+  const startDrawing = (event) => {
+    event.preventDefault();
+    const coords = getRelativeCoords(event);
+    if (!coords) return;
+
     isDrawing.current = true;
-    currentPath.current = [];
-    const { x, y } = getRelativeCoords(e);
-    currentPath.current.push({ x, y, color: drawColor });
+    lineStartRef.current = { ...coords, color: drawColor };
+    currentPath.current = [{ ...coords, color: drawColor }];
   };
 
-  const draw = (e) => {
+  const draw = (event) => {
     if (!isDrawing.current) return;
-    const { x, y } = getRelativeCoords(e);
-    currentPath.current.push({ x, y, color: drawColor });
+    event.preventDefault();
+    const coords = getRelativeCoords(event);
+    if (!coords) return;
+
+    const startPoint = lineStartRef.current;
+    if (!startPoint) return;
+
+    currentPath.current = [
+      { ...startPoint },
+      { ...coords, color: drawColor },
+    ];
+
     redrawCanvas([...paths, currentPath.current]);
   };
 
-  const stopDrawing = () => {
-    if (!isDrawing.current) return;
-    isDrawing.current = false;
+  const finalizeCurrentPath = () => {
+    const path = currentPath.current;
+    if (!path || path.length === 0) return;
+
     setPaths((prev) => {
-      const updated = [...prev, currentPath.current];
+      const pathCopy = path.map((point) => ({ ...point }));
+      const updated = [...prev, pathCopy];
       setHistory(updated);
-      setRedoStack([]); // clear redo stack
+      setRedoStack([]);
+      redrawCanvas(updated);
       return updated;
     });
+  };
+
+  const stopDrawing = (event) => {
+    if (!isDrawing.current) return;
+    isDrawing.current = false;
+    const start = lineStartRef.current;
+    if (start) {
+      const coords = event ? getRelativeCoords(event) : null;
+      if (coords) {
+        currentPath.current = [
+          { ...start },
+          { ...coords, color: drawColor },
+        ];
+      } else if (currentPath.current.length === 1) {
+        currentPath.current = [
+          { ...start },
+          { ...start },
+        ];
+      }
+    }
+    finalizeCurrentPath();
+    lineStartRef.current = null;
   };
 
   const redrawCanvas = (pathsToDraw) => {
@@ -78,18 +138,31 @@ function ImageHighlighter() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     pathsToDraw.forEach((path) => {
-      if (path.length < 2) return;
-      ctx.beginPath();
-      ctx.moveTo(path[0].x, path[0].y);
-      for (let i = 1; i < path.length; i++) {
-        ctx.lineTo(path[i].x, path[i].y);
-      }
-      ctx.strokeStyle = path[0].color;
+      if (!path || path.length === 0) return;
+      const [{ color }] = path;
+      ctx.strokeStyle = color;
       ctx.lineWidth = 4;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
       ctx.shadowColor = "rgba(0,0,0,0.1)";
       ctx.shadowBlur = 1;
+
+      if (path.length === 1) {
+        // Render single clicks as dots
+        const [{ x, y }] = path;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.closePath();
+        return;
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(path[0].x, path[0].y);
+      for (let i = 1; i < path.length; i++) {
+        ctx.lineTo(path[i].x, path[i].y);
+      }
       ctx.stroke();
     });
   };
@@ -119,8 +192,9 @@ function ImageHighlighter() {
     setPaths([]);
     setHistory([]);
     setRedoStack([]);
-    const ctx = canvasRef.current.getContext("2d");
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
   const saveDrawing = () => {
@@ -194,22 +268,27 @@ function ImageHighlighter() {
         {/* Image and Drawing Canvas */}
         {image && (
           <div className="relative border-2 border-purple-400 rounded-xl shadow-xl overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none">
+              {/* Sync overlay size with canvas/image */}
+            </div>
             <img
               ref={imgRef}
               src={image}
               alt="To annotate"
-              width={300}
-              height={400}
-              className="block h-auto"
+              className="block max-h-[70vh] w-auto max-w-full"
               onLoad={updateCanvasSize}
             />
             <canvas
               ref={canvasRef}
-              className="absolute top-0 left-0"
+              className="absolute inset-0 h-full w-full cursor-crosshair"
               onMouseDown={startDrawing}
               onMouseMove={draw}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
+              onMouseUp={(event) => stopDrawing(event)}
+              onMouseLeave={(event) => stopDrawing(event)}
+              onTouchStart={startDrawing}
+              onTouchMove={draw}
+              onTouchEnd={(event) => stopDrawing(event)}
+              onTouchCancel={(event) => stopDrawing(event)}
             />
           </div>
         )}

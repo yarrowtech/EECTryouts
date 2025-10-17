@@ -4,6 +4,7 @@ import ImageLabelDropdown from "./image_label_dropdown.jsx";
 import ClassificationTableGame from "./classification_table.jsx";
 import ImageDragDropLabeling from "./image_drag_drop.jsx";
 import ImageAnnotationUploader from "./image_annotation_uploader.jsx";
+import DrawingGame from "./drawing_game.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 const availableSections = [
@@ -26,6 +27,11 @@ const availableSections = [
     path: "image-annotation",
     label: "Image Annotation Uploader",
     element: <ImageAnnotationUploader />,
+  },
+  {
+    path: "drawing-game",
+    label: "Drawing Game",
+    element: <DrawingGame />,
   },
 ];
 
