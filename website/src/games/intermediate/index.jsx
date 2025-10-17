@@ -1,12 +1,37 @@
-import { NavLink, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import ClozeDragDropPanel from "../../panel/cloze_drag_drop.jsx";
-import MCQPanel from "../../panel/mcq.jsx";
+import ImageLabelDropdown from "./image_label_dropdown.jsx";
+import ClassificationTableGame from "./classification_table.jsx";
+import ImageDragDropLabeling from "./image_drag_drop.jsx";
+import ImageAnnotationUploader from "./image_annotation_uploader.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
-const intermediateSections = [
-  { path: "mcq", label: "MCQ Builder", element: <MCQPanel /> },
-  { path: "drag-drop", label: "Cloze Drag & Drop Builder", element: <ClozeDragDropPanel /> },
+const availableSections = [
+  {
+    path: "image-labeling",
+    label: "Image Label Dropdown",
+    element: <ImageLabelDropdown />,
+  },
+  {
+    path: "image-drag-drop",
+    label: "Map Drag Drop",
+    element: <ImageDragDropLabeling />,
+  },
+  {
+    path: "classification",
+    label: "Classification Table",
+    element: <ClassificationTableGame />,
+  },
+  {
+    path: "image-annotation",
+    label: "Image Annotation Uploader",
+    element: <ImageAnnotationUploader />,
+  },
+];
+
+const upcomingSections = [
+  { label: "Coming Soon: Science Sorting Lab" },
+  { label: "Coming Soon: Timeline Sequencer" },
 ];
 
 function IntermediateHome() {
@@ -14,8 +39,9 @@ function IntermediateHome() {
     <div className="rounded-xl border border-purple-200 bg-white p-8 shadow-sm">
       <h2 className="text-2xl font-semibold text-purple-700">Welcome to Intermediate Tools</h2>
       <p className="mt-4 text-gray-700">
-        Choose a builder from the navigation above to start crafting new questions. Each tool lets you
-        compose content and submit it to the backend API.
+        Use the dropdown above to try the image labeling activities, test the annotation uploader, or practice
+        the hemisphere classification challenge. Each tool lets you compose content and submit it to the backend
+        API.
       </p>
     </div>
   );
@@ -31,23 +57,59 @@ function NotFoundSection() {
 
 function Navigation() {
   return (
-    <nav className="flex flex-wrap gap-3 border-b border-purple-200 pb-4">
-      {intermediateSections.map(({ path, label }) => (
-        <NavLink
-          key={path}
-          to={path}
-          className={({ isActive }) =>
-            [
-              "rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200",
-              isActive ? "bg-purple-500 text-white" : "bg-purple-100 text-purple-700 hover:bg-purple-200",
-            ].join(" ")
-          }
-          end
-        >
-          {label}
-        </NavLink>
-      ))}
-    </nav>
+    <DropdownNavigation />
+  );
+}
+
+function DropdownNavigation() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const activePath = (() => {
+    if (!location.pathname.startsWith("/intermediate")) {
+      return "";
+    }
+    const segment = location.pathname.replace("/intermediate", "").replace(/^\//, "");
+    return availableSections.some((section) => section.path === segment) ? segment : "";
+  })();
+
+  const handleChange = (event) => {
+    const nextPath = event.target.value;
+    if (!nextPath) {
+      navigate("/intermediate");
+      return;
+    }
+    navigate(`/intermediate/${nextPath}`);
+  };
+
+  return (
+    <div className="flex flex-col gap-2 rounded-xl border border-purple-200 bg-white p-4 shadow-sm">
+      <label htmlFor="intermediate-tool-selector" className="text-sm font-semibold text-purple-700">
+        Select a tool
+      </label>
+      <select
+        id="intermediate-tool-selector"
+        value={activePath}
+        onChange={handleChange}
+        className="rounded-lg border border-purple-300 bg-purple-50 px-3 py-2 text-sm font-medium text-purple-700 outline-none transition focus:border-purple-500 focus:bg-white focus:ring-2 focus:ring-purple-200"
+      >
+        <option value="">Home</option>
+        <optgroup label="Available games">
+          {availableSections.map(({ path, label }) => (
+            <option key={path} value={path}>
+              {label}
+            </option>
+          ))}
+        </optgroup>
+        <optgroup label="Upcoming games">
+          {upcomingSections.map(({ label }) => (
+            <option key={label} value="" disabled>
+              {label}
+            </option>
+          ))}
+        </optgroup>
+      </select>
+    </div>
   );
 }
 
@@ -58,7 +120,7 @@ export default function IntermediateRoutes() {
         <Navigation />
         <Routes>
           <Route index element={<IntermediateHome />} />
-          {intermediateSections.map(({ path, element }) => (
+          {availableSections.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
           <Route path="*" element={<NotFoundSection />} />
