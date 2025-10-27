@@ -5,6 +5,15 @@ import ClassificationTableGame from "./classification_table.jsx";
 import ImageDragDropLabeling from "./image_drag_drop.jsx";
 import ImageAnnotationUploader from "./image_annotation_uploader.jsx";
 import DrawingGame from "./drawing_game.jsx";
+import ShadingGame from "./shading.jsx";
+import ClozeMathGame from "./cloze_math.jsx";
+import MathFormulaGame from "./math_formula.jsx";
+import ClozeMathImageGame from "./cloze_math_image.jsx";
+import NumberLineDragDropGame from "./number_line_drag_drop.jsx";
+import DotLinePlotGame from "./dot_line_plot.jsx";
+import GriddedGame from "./gridded.jsx";
+import CloseChemistryGame from "./cloze_chemistry.jsx";
+import ChemistryFormulaGame from "./chemistry_formula.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 const availableSections = [
@@ -32,6 +41,51 @@ const availableSections = [
     path: "drawing-game",
     label: "Drawing Game",
     element: <DrawingGame />,
+  },
+  {
+    path: "shading",
+    label: "Shading Game",
+    element: <ShadingGame />,
+  },
+  {
+    path: "cloze-math",
+    label: "Cloze Math",
+    element: <ClozeMathGame />,
+  },
+  {
+    path: "math-formula",
+    label: "Math Formula",
+    element: <MathFormulaGame />,
+  },
+  {
+    path: "cloze-math-image",
+    label: "Cloze Math with Image",
+    element: <ClozeMathImageGame />,
+  },
+  {
+    path: "number-line-drag-drop",
+    label: "Number Line Drag & Drop",
+    element: <NumberLineDragDropGame />,
+  },
+  {
+    path: "dot-line-plot",
+    label: "Dot Plot / Line Plot",
+    element: <DotLinePlotGame />,
+  },
+  {
+    path: "gridded",
+    label: "Gridded Response",
+    element: <GriddedGame />,
+  },
+  {
+    path: "cloze-chemistry",
+    label: "Cloze Chemistry",
+    element: <CloseChemistryGame />,
+  },
+  {
+    path: "chemistry-formula",
+    label: "Chemistry Formula",
+    element: <ChemistryFormulaGame />,
   },
 ];
 
