@@ -14,6 +14,7 @@ import DotLinePlotGame from "./dot_line_plot.jsx";
 import GriddedGame from "./gridded.jsx";
 import CloseChemistryGame from "./cloze_chemistry.jsx";
 import ChemistryFormulaGame from "./chemistry_formula.jsx";
+import LineChart from "./line_chart.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 const availableSections = [
@@ -86,6 +87,11 @@ const availableSections = [
     path: "chemistry-formula",
     label: "Chemistry Formula",
     element: <ChemistryFormulaGame />,
+  },
+  {
+    path: "line-chart",
+    label: "Line Chart Tool",
+    element: <LineChart />,
   },
 ];
 
